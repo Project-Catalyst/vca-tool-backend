@@ -16,7 +16,14 @@ app.get("/:id", (req, res) => {
 });
 
 app.post("/:id", (req, res) => {
-  return client.incr(req.params.id, function (err, count) {
+  return client.incr(req.params.id, (err, count) => {
+    if (err) return res.status(500).send("unavailable");
+    return res.json({ reviews: parseInt(count) });
+  });
+});
+
+app.delete("/:id", (req, res) => {
+  return client.decr(req.params.id, (err, count) => {
     if (err) return res.status(500).send("unavailable");
     return res.json({ reviews: parseInt(count) });
   });
