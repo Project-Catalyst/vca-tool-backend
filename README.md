@@ -4,6 +4,19 @@ This is a simple node server connected to redis acting as a counter for how many
 
 ## API
 
+### GET /
+
+Returns all the keys and the number of their respective reviews:
+
+```
+{
+  "assesment_1": 1,
+  "assesment_2": 4,
+  "assesment_3": 2,
+  "assesment_4": 0,
+}
+```
+
 ### GET /:id
 
 Returns the number of reviews an assessment has gotten, or `null`:

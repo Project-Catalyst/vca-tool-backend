@@ -1,11 +1,28 @@
 const express = require("express");
+const { promisify } = require("util");
 const redis = require("redis");
 const app = express();
 const port = process.env.PORT || 3000;
 const client = redis.createClient(process.env.REDIS_URL);
+const getAsync = promisify(client.get).bind(client);
+const keysAsync = promisify(client.keys).bind(client);
 
-app.get("/", (req, res) => {
-  res.send("vCA Backend");
+app.get("/", async (req, res) => {
+  try {
+    const keys = await keysAsync("*");
+    return res.json(
+      Object.assign(
+        {},
+        ...(await Promise.all(
+          keys.map((key) => {
+            return getAsync(key).then((value) => ({ [key]: parseInt(value) }));
+          })
+        ))
+      )
+    );
+  } catch (err) {
+    return res.status(500).send("unavailable");
+  }
 });
 
 app.get("/:id", (req, res) => {
