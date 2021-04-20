@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { promisify } = require("util");
 const redis = require("redis");
 const app = express();
@@ -6,6 +7,8 @@ const port = process.env.PORT || 3000;
 const client = redis.createClient(process.env.REDIS_URL);
 const getAsync = promisify(client.get).bind(client);
 const keysAsync = promisify(client.keys).bind(client);
+
+app.use(cors());
 
 app.get("/", async (req, res) => {
   try {
