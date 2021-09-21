@@ -28,6 +28,13 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/flush", (req, res) => {
+  return client.flushall((err, val) => {
+    if (err) return res.status(500).send("internal server error");
+    return res.json({ status: "success" });
+  });
+});
+
 app.get("/:id", (req, res) => {
   return client.get(req.params.id, (err, rep) => {
     if (err) return res.status(500).send("unavailable");
